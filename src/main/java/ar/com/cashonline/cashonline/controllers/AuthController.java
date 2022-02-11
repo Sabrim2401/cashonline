@@ -24,33 +24,35 @@ public class AuthController {
     @Autowired
     UsuarioService usuarioService;
 
-    /*
-     * @Autowired private AuthenticationManager authenticationManager;
-     */
     @Autowired
     private JWTTokenUtil jwtTokenUtil;
 
     @Autowired
     private JWTUserDetailsService userDetailsService;
 
-    // Auth : authentication ->
     @PostMapping("auth/register")
     public ResponseEntity<RegistrationResponse> postRegisterUser(@RequestBody RegistrationRequest req,
             BindingResult results) {
-                
-        RegistrationResponse r = new RegistrationResponse();
-    
-        Usuario usuario = usuarioService.crearUsuario(req.email,req.firstname,req.lastname,req.username,req.password);
-        
-        r.isOk = true;
-        r.message = "Te registraste con exito!";
-        r.userId = usuario.getUserId(); // <-- AQUI ponemos el numerito de id para darle a front!
 
-        return ResponseEntity.ok(r);
+        RegistrationResponse r = new RegistrationResponse();
+
+        if (usuarioService.validarEmail(req.email) == true) {
+            Usuario usuario = usuarioService.crearUsuario(req.email, req.firstname, req.lastname, req.username,
+                    req.password);
+            r.isOk = true;
+            r.message = "Te registraste con exito!";
+            r.userId = usuario.getUserId();
+            return ResponseEntity.ok(r);
+
+        } else
+            r.isOk = false;
+        r.message = "Ya existe usuario";
+
+        return ResponseEntity.badRequest().body(r);
 
     }
 
-    @PostMapping("auth/login") // probando nuestro login
+    @PostMapping("auth/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest,
             BindingResult results) throws Exception {
 
@@ -59,16 +61,12 @@ public class AuthController {
         UserDetails userDetails = usuarioService.getUserAsUserDetail(usuarioLogueado);
         Map<String, Object> claims = usuarioService.getUserClaims(usuarioLogueado);
 
-       
-        // ver esos ids de que user pertenecen si logran interceptar el token
-        // Por eso es que en cada request debemos validar el token(firma)
         String token = jwtTokenUtil.generateToken(userDetails, claims);
 
         Usuario u = usuarioService.buscarPorUsername(authenticationRequest.username);
 
         LoginResponse r = new LoginResponse();
         r.id = u.getUserId();
-     // r.userType = u.g();
         r.username = authenticationRequest.username;
         r.email = u.getEmail();
         r.token = token;

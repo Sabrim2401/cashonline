@@ -31,8 +31,7 @@ import ar.com.cashonline.cashonline.service.UsuarioService;
 public class LoansController {
 
     private static final String LOANS_PATH = "/pageloans";
-    //private static final String LOANS_PATH = "/franki";
-
+    // private static final String LOANS_PATH = "/franki";
 
     @Autowired
     LoansService loansService;
@@ -46,15 +45,21 @@ public class LoansController {
     @PostMapping("/loans")
     public ResponseEntity<GenericResponse> crearLoan(@RequestBody CrearLoans loan, Principal principal) {
 
-        Loan newLoan = loansService.crearLoan(loan, principal.getName());
-
         GenericResponse respuesta = new GenericResponse();
 
-        respuesta.message = "El prestamo ha sido creado correctamente.";
-        respuesta.isOk = true;
-        respuesta.id = newLoan.getLoanId();
+        if (loansService.validarAmount(loan.totalAmountLoan) == true) {
+            Loan newLoan = loansService.crearLoan(loan, principal.getName());
 
-        return ResponseEntity.ok(respuesta);
+            respuesta.message = "El prestamo ha sido creado correctamente.";
+            respuesta.isOk = true;
+            respuesta.id = newLoan.getLoanId();
+
+            return ResponseEntity.ok(respuesta);
+        } else {
+            respuesta.message = "El valor del prestamo debe ser mayor a cero";
+            respuesta.isOk = false;
+            return ResponseEntity.badRequest().body(respuesta);
+        }
     }
 
     // @GetMapping(value = "/loans", params = "userId")
@@ -99,8 +104,6 @@ public class LoansController {
 
         return ResponseEntity.ok(pResponse);
     }
-
-    /////terminar de probar//////
 
     @GetMapping("/franki")
     @ResponseBody

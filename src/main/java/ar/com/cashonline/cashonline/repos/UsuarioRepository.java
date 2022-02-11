@@ -6,12 +6,12 @@ import org.springframework.stereotype.Repository;
 import ar.com.cashonline.cashonline.entities.Usuario;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer>  {
-    
-    public Usuario findByUsername(String userName);
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
-    public Usuario findByEmail(String email);
+    Usuario findByUsername(String userName);
 
-    public Usuario findByUserId(Integer id);
-    
+    Usuario findByEmail(String email);
+
+    Usuario findByUserId(Integer id);
+
 }

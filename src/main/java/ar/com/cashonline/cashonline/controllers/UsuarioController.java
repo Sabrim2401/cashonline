@@ -21,12 +21,6 @@ public class UsuarioController {
     @Autowired
     UsuarioService uService;
 
-   // Deberá implementar una app que exponga una API REST
-   // de usuarios. Dado un ID de usuario devuelva información del mismo, 
-   //con la siguiente estructura de respuesta:
-
-
-
     @GetMapping("/usuario/{id}")
     public ResponseEntity<UserResponse> getUsuario(@PathVariable Integer id){
         var user = uService.findById(id);

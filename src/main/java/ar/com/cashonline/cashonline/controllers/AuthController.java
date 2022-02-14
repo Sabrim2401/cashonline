@@ -3,7 +3,6 @@ package ar.com.cashonline.cashonline.controllers;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.HashMap;
 import java.util.Map;
 
 import ar.com.cashonline.cashonline.entities.Usuario;
@@ -26,9 +25,6 @@ public class AuthController {
 
     @Autowired
     private JWTTokenUtil jwtTokenUtil;
-
-    @Autowired
-    private JWTUserDetailsService userDetailsService;
 
     @PostMapping("auth/register")
     public ResponseEntity<RegistrationResponse> postRegisterUser(@RequestBody RegistrationRequest req,

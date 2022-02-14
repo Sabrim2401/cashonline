@@ -33,10 +33,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        // configure AuthenticationManager so that it knows from where to load
-
-        // user for matching credentials
-
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 
     }
@@ -59,30 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        // No necesitamos CSRF para este ejemplo ya que somos API Rest y no tenemos ni
-        // cookies
-        // ni session
-        httpSecurity.csrf().disable().cors().and() // activamos cors! para que pueda ser llamado desde otro dominio
-                // no autenticar estos request particulares ya que pueden ingresar sin
-                // autenticacion
+        httpSecurity.csrf().disable().cors().and() 
 
                 .authorizeRequests().antMatchers("/auth/*").permitAll().
-                // .antMatchers("/auth/register").permitAll().
-
-                // todos los otros requests deben ser autenticados
 
                 anyRequest().authenticated().and().
-
-                // asegurarse de usar stateless session(sesiones sin estado); la sesion no se
-                // usara
-
-                // guardar el estado del usuario.
 
                 exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Agrego el filter(filtro) para validar los tokens en cada request
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -96,10 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Override
     public void addCorsMappings(CorsRegistry registry) {
 
-        // Este habilita el Cors para todo tipo de items
-        // En produccion esto debe ser chequeado previamente y no permitir todos
-        // Esto solo se muestra a nivel informativo y para que se pueda
-        // hacer un front luego.
         registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
 
     }

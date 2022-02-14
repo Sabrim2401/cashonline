@@ -46,7 +46,6 @@ public class UsuarioService {
         return uDetails;
     }
 
-    // Usamos el tipo de datos SET solo para usar otro diferente a List private
     Set<? extends GrantedAuthority> getAuthorities(Usuario usuario) {
 
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();

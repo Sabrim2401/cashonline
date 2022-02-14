@@ -1,8 +1,6 @@
 package ar.com.cashonline.cashonline.controllers;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +19,6 @@ import ar.com.cashonline.cashonline.commom.PaginationResultRetrieved;
 import ar.com.cashonline.cashonline.entities.Loan;
 import ar.com.cashonline.cashonline.models.request.CrearLoans;
 import ar.com.cashonline.cashonline.models.response.GenericResponse;
-import ar.com.cashonline.cashonline.models.response.LoansResponse;
 import ar.com.cashonline.cashonline.models.response.PaginationResponse;
 import ar.com.cashonline.cashonline.service.LoansService;
 import ar.com.cashonline.cashonline.service.UsuarioService;
@@ -31,7 +27,6 @@ import ar.com.cashonline.cashonline.service.UsuarioService;
 public class LoansController {
 
     private static final String LOANS_PATH = "/pageloans";
-    // private static final String LOANS_PATH = "/franki";
 
     @Autowired
     LoansService loansService;
@@ -62,34 +57,6 @@ public class LoansController {
         }
     }
 
-    // @GetMapping(value = "/loans", params = "userId")
-    @GetMapping("/loans")
-    @ResponseBody
-    public ResponseEntity<List<LoansResponse>> obtainLoans(@RequestParam(required = false) Integer userId) {
-
-        if (userId != null) {
-            var userLoans = userService.findById(userId);
-
-            List<Loan> loansUser = userLoans.getLoans();
-
-            List<LoansResponse> loanR = new ArrayList<>();
-            for (Loan loan : loansUser) {
-
-                LoansResponse lResponse = new LoansResponse();
-
-                lResponse.total = loan.getTotalAmountLoan();
-                lResponse.userId = loan.getUsuario().getUserId();
-                lResponse.loanId = loan.getLoanId();
-
-                loanR.add(lResponse);
-            }
-            return ResponseEntity.ok(loanR);
-        } else {
-
-            List<LoansResponse> totalLoans = loansService.findAllLoans();
-            return ResponseEntity.ok(totalLoans);
-        }
-    }
 
     @GetMapping("/pageloans")
     public ResponseEntity<PaginationResponse> list(Pageable pageable,
@@ -105,9 +72,9 @@ public class LoansController {
         return ResponseEntity.ok(pResponse);
     }
 
-    @GetMapping("/franki")
+    @GetMapping("/loans-pageable")
     @ResponseBody
-    public ResponseEntity<PaginationResponse> obtainLoansPrueba(Pageable pageable,
+    public ResponseEntity<PaginationResponse> obtainLoans(Pageable pageable,
             UriComponentsBuilder uriBuilder, HttpServletResponse response,
             @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) Integer userId) {
 

@@ -22,7 +22,7 @@ public class UsuarioService {
 
     public Usuario crearUsuario(String email, String firstname, String lastname, String username, String password) {
         Usuario usuario = new Usuario();
-         usuario.setEmail(email);
+        usuario.setEmail(email);
         usuario.setFirstname(firstname);
         usuario.setLastname(lastname);
         usuario.setUsername(username);
@@ -81,11 +81,9 @@ public class UsuarioService {
         repo.deleteById(id);
     }
 
-
-    
     public boolean validarEmail(String email) {
 
-        if (repo.findByEmail(email) != null) 
+        if (repo.findByEmail(email) != null)
             return false;
         return true;
     }
